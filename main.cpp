@@ -30,19 +30,31 @@ void setBool2dToZero(bool** arr, int dim){
         }
     }
 }
+void tracing(Field* temp){
+    Field* traceTemp=temp;
+    std::vector<Field*> v;
+    while (traceTemp->prev!= nullptr){
+        v.push_back(traceTemp);
+        traceTemp=traceTemp->prev;
+    }
+    std::cout<<"START ";
+    for(int i=v.size()-1;i>=0;i--){
+
+        if(i==0)
+            std::cout<<"("<<v[i]->x<<", "<<v[i]->y<<") END.\n";
+        else
+            std::cout<<"("<<v[i]->x<<", "<<v[i]->y<<") -> ";
+    }
+}
 int getMinDist(int startPos[], int finishPos[], int dim){
     int movesX[] = {2, 2, -2, -2, 1, 1, -1, -1};
     int movesY[] = { -1, 1, 1, -1, 2, -2, 2, -2};
-
-
     bool** visited = new bool*[dim+1];
     for(int i=0; i<=dim;i++){
         visited[i]= new bool[dim+1];
     }
     setBool2dToZero(visited,dim);
     visited[startPos[0]][startPos[1]] = true;
-
-
 
     std::queue<Field*> q;
     Field* start = new Field(startPos[0], startPos[1], 0, nullptr);
@@ -54,23 +66,9 @@ int getMinDist(int startPos[], int finishPos[], int dim){
         temp=q.front();
         q.pop();
         if(temp->x == finishPos[0] && temp->y == finishPos[1]){
-            Field* traceTemp=temp;
-            std::vector<Field*> v;
-            while (traceTemp->prev!= nullptr){
-                v.push_back(traceTemp);
-                traceTemp=traceTemp->prev;
-            }
-            std::cout<<"START ";
-            for(int i=v.size()-1;i>=0;i--){
-
-                if(i==0)
-                    std::cout<<"("<<v[i]->x<<", "<<v[i]->y<<") END.\n";
-                else
-                    std::cout<<"("<<v[i]->x<<", "<<v[i]->y<<") -> ";
-            }
+            tracing(temp);
             return temp->disFromStart;
         }
-
         for(int i=0; i<8;i++){
             x = temp->x + movesX[i];
             y = temp->y + movesY[i];
